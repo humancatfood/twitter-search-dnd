@@ -5,8 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 
-fetch('/.netlify/functions/hello')
+fetch('/.netlify/functions/search?q=bananas')
   .then(response => response.json())
+  .then(console.log.bind(null, 'search response:'))
 
 ReactDOM.render(
   <React.StrictMode>
