@@ -4,6 +4,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+
+fetch('/.netlify/functions/hello')
+  .then(response => response.json())
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
