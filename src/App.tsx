@@ -1,12 +1,21 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 
-import tweets from './tweets.json'
+// import tweets from './tweets.json'
 
-const savedTweets = tweets.slice(2,4)
+//
+
+interface IUser {
+  name: string
+  screen_name: string
+  profile_image_url_https: string
+}
 
 interface ITweet {
   id: number
+  user: IUser
+  created_at: string
+  text: string
 }
 
 interface TweetProps {
@@ -21,7 +30,6 @@ interface TweetProps {
 
 function Tweet(props: TweetProps) {
   const {avatar, name, handle, date, body, onSave, onDelete} = props
-  console.log(onSave, onDelete)
   return (
     <div>
       <img src={avatar} alt={name} />
@@ -38,22 +46,49 @@ function Tweet(props: TweetProps) {
   )
 }
 
+async function fetchTweets(searchTerm: string): Promise<Array<ITweet>> {
+  try {
+    const response = await fetch(`/.netlify/functions/search?q=${searchTerm}`)
+    const {statuses} = await response.json()
+    return statuses
+  } catch (err) {
+    console.error('error fetching tweets:', err)
+    return []
+  }
+}
+
 
 function App() {
+
+  const [searchTerm, setSearchTerm] = useState('')
+  const [tweets, setTweets] = useState<Array<ITweet>>([])
+  const [savedTweets, setSavedTweets] = useState<Array<ITweet>>([])
+
+
+  useEffect(() => {
+    if (searchTerm) {
+      fetchTweets(searchTerm)
+        .then(setTweets)
+    }
+  }, [searchTerm])
+
 
   function onSubmit (e: React.FormEvent<HTMLFormElement>) : void {
     e.preventDefault()
     const form = e.currentTarget as HTMLElement
     const input = form.querySelector('[name="searchterm"]') as HTMLInputElement
-    console.log('onSubmit:', input.value)
+    setSearchTerm(input.value)
   }
 
   function onSaveTweet (tweet: ITweet) {
-    console.log(`saving tweet ${tweet.id}`)
+    setSavedTweets(prev => ([
+      ...prev.filter(inList => inList.id !== tweet.id),
+      tweet,
+    ]))
   }
 
   function onDeleteTweet (tweet: ITweet) {
-    console.log(`deleting tweet ${tweet.id}`)
+    setSavedTweets(prev => prev.filter(inList => inList.id !== tweet.id))
   }
 
   return (
