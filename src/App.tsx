@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 
-// import tweets from './tweets.json'
-
-//
 
 interface IUser {
   name: string
