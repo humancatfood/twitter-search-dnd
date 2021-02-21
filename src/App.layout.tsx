@@ -40,4 +40,5 @@ export const ColumnBody = styled.div({
 
 export const ColumnTitle = styled.h2({
   margin: 0,
+  opacity: 0.3,
 })

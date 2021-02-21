@@ -33,8 +33,9 @@ const Placeholder = styled.div({
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  opacity: 0.5,
+  opacity: 0.3,
   textAlign: 'center',
+  fontWeight: 'bolder',
   lineHeight: 1.4,
   maxWidth: '60%',
 })
