@@ -7,15 +7,27 @@ import Title from './components/Title'
 import TweetList from './components/TweetList'
 import SearchForm from './components/SearchForm'
 
-import useStoredItems from './utils/storage'
-import {useTweetSearch} from './data'
+import useStore from './utils/storage'
+import useSearch from './utils/search'
+import {fetchTweets} from './data'
 
 
+const FETCHED_TWEETS = 'FETCHED_TWEETS'
+const SAVED_TWEETS = 'SAVED_TWEETS'
 
 
-const useSavedTweets = () => useStoredItems<ITweet>({
+const compareFn = (a: ITweet, b: ITweet) => String(a.id) === String(b.id)
+
+
+const useSavedTweets = () => useStore<ITweet>({
   storageKey: 'saved-tweets',
-  compareFn: (a: ITweet, b: ITweet) => String(a.id) === String(b.id),
+  compareFn,
+})
+
+const useTweetSearch = (searchTerm: string) => useSearch<ITweet>({
+  searchTerm,
+  compareFn,
+  fetchFn: fetchTweets,
 })
 
 const filterTweets = (tweets: Array<ITweet>, exclude: Array<ITweet>) => {
@@ -28,21 +40,21 @@ function App(): ReactElement {
 
   const [searchTerm, setSearchTerm] = useState('')
 
-  const [fetchedTweets, isLoading, moveFetchedTweet] = useTweetSearch(searchTerm)
+  const {items: fetchedTweets, isLoading, moveItem: moveFetchedTweet} = useTweetSearch(searchTerm)
 
-  const [savedTweets, saveTweet, deleteTweet, moveSavedTweets] = useSavedTweets()
+  const {items: savedTweets, addItem: saveTweet, removeItem: deleteTweet, moveItem: moveSavedTweets} = useSavedTweets()
 
 
   const onDragEnd = ({source, destination, draggableId}: DropResult) => {
 
     if (source.droppableId === destination?.droppableId) {
-      if (source.droppableId === 'fetched-tweets') {
+      if (source.droppableId === FETCHED_TWEETS) {
         const tweet = fetchedTweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
         if (tweet) {
           moveFetchedTweet(tweet, destination.index)
         }
       }
-      if (source.droppableId === 'saved-tweets') {
+      if (source.droppableId === SAVED_TWEETS) {
         const tweet = savedTweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
         if (tweet) {
           moveSavedTweets(tweet, destination.index)
@@ -50,13 +62,13 @@ function App(): ReactElement {
       }
     }
 
-    if (source.droppableId === 'fetched-tweets' && destination?.droppableId === 'saved-tweets') {
+    if (source.droppableId === FETCHED_TWEETS && destination?.droppableId === SAVED_TWEETS) {
       const tweet = fetchedTweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
       if (tweet) {
         saveTweet(tweet)
       }
     }
-    if (source.droppableId === 'saved-tweets' && destination?.droppableId !== 'saved-tweets') {
+    if (source.droppableId === SAVED_TWEETS && destination?.droppableId !== SAVED_TWEETS) {
       const tweet = savedTweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
       if (tweet) {
         deleteTweet(tweet)
@@ -87,7 +99,7 @@ function App(): ReactElement {
               <TweetList
                 placeholder="Nothing to display. Use the Search Box to find tweets to save"
                 tweets={tweetsToDisplay}
-                droppableId="fetched-tweets"
+                droppableId={FETCHED_TWEETS}
                 onSaveTweet={saveTweet}
               />
             </Layout.ColumnBody>
@@ -101,7 +113,7 @@ function App(): ReactElement {
               <TweetList
                 placeholder="Drag discovered tweets here to save them"
                 tweets={savedTweets}
-                droppableId="saved-tweets"
+                droppableId={SAVED_TWEETS}
                 onDeleteTweet={deleteTweet}
               />
             </Layout.ColumnBody>

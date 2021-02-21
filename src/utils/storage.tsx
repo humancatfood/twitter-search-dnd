@@ -1,17 +1,17 @@
 import {useEffect, useState} from 'react'
 
 
-export type options<T> = {
-  storageKey: string
-  compareFn: (a: T, b: T) => boolean
+type options<T> = {
+  storageKey: string,
+  compareFn: (a: T, b: T) => boolean,
 }
 
-export type result<T> = [
-  Array<T>,
-  (item: T) => void,
-  (item: T) => void,
-  (item: T, to: number) => void,
-]
+type result<T> = {
+  items: Array<T>,
+  addItem: (item: T) => void,
+  removeItem: (item: T) => void,
+  moveItem: (item: T, to: number) => void,
+}
 
 
 function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
@@ -33,7 +33,7 @@ function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
 
 
   const addItem = (item: T) => setItems((prev: Array<T>) => {
-    const exists = prev.find((entry: T)=> compareFn(entry, item))
+    const exists = !!prev.find((entry: T)=> compareFn(entry, item))
 
     if (exists) {
       return prev
@@ -60,12 +60,12 @@ function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
     return result
   })
 
-  return [
+  return {
     items,
     addItem,
     removeItem,
     moveItem,
-  ]
+  }
 
 }
 
