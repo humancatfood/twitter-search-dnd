@@ -68,6 +68,7 @@ function App(): ReactElement {
         saveTweet(tweet)
       }
     }
+
     if (source.droppableId === SAVED_TWEETS && destination?.droppableId !== SAVED_TWEETS) {
       const tweet = savedTweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
       if (tweet) {
