@@ -29,8 +29,8 @@ function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
   }, [storageKey])
 
 
-  const addItem = (item: T) => setItems(prev => {
-    const exists = prev.find(entry => compareFn(entry, item))
+  const addItem = (item: T) => setItems((prev: Array<T>) => {
+    const exists = prev.find((entry: T)=> compareFn(entry, item))
 
     if (exists) {
       return prev;
@@ -45,8 +45,8 @@ function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
   })
 
 
-  const removeItem = (item: T) => setItems(prev => {
-    const result = prev.filter(entry => !compareFn(entry, item))
+  const removeItem = (item: T) => setItems((prev: Array<T>) => {
+    const result = prev.filter((entry: T) => !compareFn(entry, item))
     localStorage.setItem(storageKey, JSON.stringify(result))
     return result;
   })
