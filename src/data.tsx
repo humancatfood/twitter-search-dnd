@@ -4,7 +4,12 @@ import {ITweet} from './types'
 
 export async function fetchTweets(searchTerm: string): Promise<Array<ITweet>> {
   try {
-    const response = await fetch(`/.netlify/functions/search?q=${searchTerm}`)
+
+    const url = new URL('/.netlify/functions/search', location.href)
+    url.searchParams.set('q', searchTerm)
+    url.searchParams.set('count', '20')
+
+    const response = await fetch(url.toString())
     const {statuses} = await response.json()
     return statuses
   } catch (err) {
