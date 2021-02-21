@@ -1,8 +1,9 @@
-import styled from 'styled-components'
+import styled, {keyframes} from 'styled-components'
 
 
 export type SearchFormProps = {
-  onSubmit: (searchTerm: string) => void
+  onSubmit: (searchTerm: string) => void,
+  isLoading: Boolean,
 }
 
 const shared = {
@@ -30,7 +31,25 @@ const Button = styled.button({
 })
 
 
-function SearchForm({onSubmit: onSubmitProp}: SearchFormProps) {
+const pulse = keyframes`
+	0%, 100% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+	}
+`;
+
+const LoadingIndicator = styled.span`
+  &:after {
+    content: '⏳';
+  }
+  display: inline-block;
+  animation: ${pulse} 800ms infinite;
+`
+
+
+function SearchForm({onSubmit: onSubmitProp, isLoading}: SearchFormProps) {
 
   function onSubmit (e: React.FormEvent<HTMLFormElement>) : void {
     e.preventDefault()
@@ -43,6 +62,7 @@ function SearchForm({onSubmit: onSubmitProp}: SearchFormProps) {
     <Form action="#" onSubmit={onSubmit}>
       <Input type="text" name="searchterm" />
       <Button type="submit">🔎</Button>
+      {isLoading && <LoadingIndicator />}
     </Form>
   );
 }

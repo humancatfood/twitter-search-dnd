@@ -16,16 +16,19 @@ export async function fetchTweets(searchTerm: string): Promise<Array<ITweet>> {
 }
 
 
-export function useTweetSearch(searchTerm: string) {
+export function useTweetSearch(searchTerm: string): [Array<ITweet>, Boolean] {
   const [tweets, setTweets] = useState<Array<ITweet>>([])
+  const [isLoading, setLoading] = useState<Boolean>(false)
 
   useEffect(() => {
     if (searchTerm) {
+      setLoading(true)
       fetchTweets(searchTerm)
         .then(setTweets)
+        .finally(() => setLoading(false))
     }
   }, [searchTerm])
 
-  return tweets
+  return [tweets, isLoading]
 
 }

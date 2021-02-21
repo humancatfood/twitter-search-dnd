@@ -28,7 +28,7 @@ function App() {
 
   const [searchTerm, setSearchTerm] = useState('')
 
-  const fetchedTweets = useTweetSearch(searchTerm)
+  const [fetchedTweets, isLoading] = useTweetSearch(searchTerm)
 
   const [savedTweets, saveTweet, deleteTweet] = useSavedTweets()
 
@@ -55,7 +55,7 @@ function App() {
         <Layout.Columns>
           <Layout.Column>
             <Layout.ColumnHeader>
-              <SearchForm onSubmit={setSearchTerm} />
+              <SearchForm onSubmit={setSearchTerm} isLoading={isLoading} />
             </Layout.ColumnHeader>
             <Layout.ColumnBody>
               <TweetList
