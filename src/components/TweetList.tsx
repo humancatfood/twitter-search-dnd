@@ -9,6 +9,7 @@ import Tweet from './Tweet'
 type TweetListProps = {
   tweets: Array<ITweet>,
   droppableId: string,
+  placeholder?: string,
   onSaveTweet?: (tweet: ITweet) => void,
   onDeleteTweet?: (tweet: ITweet) => void,
 }
@@ -18,6 +19,7 @@ const List = styled.ul({
   margin: 0,
   padding: 0,
   height: '100%',
+  position: 'relative',
 })
 
 const ListItem = styled.li({
@@ -26,25 +28,41 @@ const ListItem = styled.li({
   borderBottom: '1px solid lightgrey',
 })
 
+const Placeholder = styled.div({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  opacity: 0.5,
+  textAlign: 'center',
+  lineHeight: 1.4,
+  maxWidth: '60%',
+})
+
 const getItemStyle = (isDragging:boolean, draggableStyle: any) => ({
   userSelect: 'none',
   transition: 'all 200ms ease-in-out',
   ...(isDragging && {
     borderRadius: '4px',
-    background: 'rgba(0, 0, 0, 0.1)',
-    backdropFilter: 'blur(8px)',
-    boxShadow: '4px 4px 5px rgba(0, 0, 0, 0.4)',
+    background: 'rgba(0, 0, 0, 0.05)',
+    backdropFilter: 'blur(6px)',
+    boxShadow: '6px 6px 8px 2px rgba(0, 0, 0, 0.4)',
   }),
   ...draggableStyle,
 })
 
 
-function TweetList({tweets, droppableId, onSaveTweet, onDeleteTweet}: TweetListProps): ReactElement {
+function TweetList({tweets, droppableId, onSaveTweet, onDeleteTweet, placeholder}: TweetListProps): ReactElement {
+
+  const showPlaceholder = !tweets.length
 
   return (
     <Droppable droppableId={droppableId}>
       {(provided: any) => (
         <List ref={provided.innerRef}>
+          {showPlaceholder && (
+            <Placeholder>{placeholder}</Placeholder>
+          )}
           {tweets.map((tweet, index) => (
             <Draggable
               key={tweet.id}
@@ -58,7 +76,7 @@ function TweetList({tweets, droppableId, onSaveTweet, onDeleteTweet}: TweetListP
                   {...provided.dragHandleProps}
                   style={getItemStyle(
                     snapshot.isDragging,
-                    provided.draggableProps.style
+                    provided.draggableProps.style,
                   )}
                 >
                   <Tweet

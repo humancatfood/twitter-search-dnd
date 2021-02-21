@@ -51,7 +51,7 @@ const Body = styled.div({
 })
 
 const Img = styled.img({
-  borderRadius: 4
+  borderRadius: 4,
 })
 
 const Button = styled.button({

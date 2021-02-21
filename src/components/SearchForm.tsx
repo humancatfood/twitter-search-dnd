@@ -2,10 +2,6 @@ import React, {ReactElement} from 'react'
 import styled, {keyframes} from 'styled-components'
 
 
-export type SearchFormProps = {
-  onSubmit: (searchTerm: string) => void,
-  isLoading: boolean,
-}
 
 const shared = {
   border: '1px solid lightgray',
@@ -22,6 +18,11 @@ const Input = styled.input({
   borderRight: 'none',
   borderTopLeftRadius: '4px',
   borderBottomLeftRadius: '4px',
+  padding: '0 12px',
+  '&::placeholder': {
+    fontWeight: 'bolder',
+    opacity: 0.5,
+  },
 })
 
 const Button = styled.button({
@@ -50,7 +51,14 @@ const LoadingIndicator = styled.span`
 `
 
 
-function SearchForm({onSubmit: onSubmitProp, isLoading}: SearchFormProps): ReactElement {
+export type SearchFormProps = {
+  onSubmit: (searchTerm: string) => void,
+  isLoading?: boolean,
+  placeholder?: string
+}
+
+
+function SearchForm({onSubmit: onSubmitProp, placeholder, isLoading}: SearchFormProps): ReactElement {
 
   function onSubmit (e: React.FormEvent<HTMLFormElement>) : void {
     e.preventDefault()
@@ -64,7 +72,7 @@ function SearchForm({onSubmit: onSubmitProp, isLoading}: SearchFormProps): React
 
   return (
     <Form action="#" onSubmit={onSubmit}>
-      <Input type="text" name="searchterm" />
+      <Input type="text" name="searchterm" placeholder={placeholder} />
       <Button type="submit">🔎</Button>
       {isLoading && (
         <>

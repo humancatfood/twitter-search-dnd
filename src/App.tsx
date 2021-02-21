@@ -61,10 +61,15 @@ function App(): ReactElement {
         <Layout.Columns>
           <Layout.Column>
             <Layout.ColumnHeader>
-              <SearchForm onSubmit={setSearchTerm} isLoading={isLoading} />
+              <SearchForm
+                onSubmit={setSearchTerm}
+                isLoading={isLoading}
+                placeholder="Search"
+              />
             </Layout.ColumnHeader>
             <Layout.ColumnBody>
               <TweetList
+                placeholder="Nothing to display. Use the Search Box to find tweets to save"
                 tweets={tweetsToDisplay}
                 droppableId="fetched-tweets"
                 onSaveTweet={saveTweet}
@@ -78,6 +83,7 @@ function App(): ReactElement {
             </Layout.ColumnHeader>
             <Layout.ColumnBody>
               <TweetList
+                placeholder="Drag discovered tweets here to save them"
                 tweets={savedTweets}
                 droppableId="saved-tweets"
                 onDeleteTweet={deleteTweet}
