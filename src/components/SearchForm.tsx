@@ -30,6 +30,7 @@ const Button = styled.button({
   width: '2rem',
   borderTopRightRadius: '4px',
   borderBottomRightRadius: '4px',
+  cursor: 'pointer',
 })
 
 
