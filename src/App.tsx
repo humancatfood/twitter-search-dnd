@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useMemo, useState} from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
 import {ITweet} from './types'
@@ -18,24 +18,31 @@ const useSavedTweets = () => useStoredItems<ITweet>({
   compareFn: (a: ITweet, b: ITweet) => String(a.id) === String(b.id),
 })
 
+const filterTweets = (tweets: Array<ITweet>, exclude: Array<ITweet>) => {
+  const excludeIds = new Set(exclude.map(tweet => String(tweet.id)))
+  return tweets.filter(tweet => !excludeIds.has(String(tweet.id)))
+}
+
 
 function App() {
 
   const [searchTerm, setSearchTerm] = useState('')
 
-  const tweets = useTweetSearch(searchTerm)
+  const fetchedTweets = useTweetSearch(searchTerm)
 
   const [savedTweets, saveTweet, deleteTweet] = useSavedTweets()
 
 
   const onDragEnd = ({source, destination, draggableId}: DropResult) => {
     if (source.droppableId === 'fetched-tweets' && destination?.droppableId === 'saved-tweets') {
-      const tweet = tweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
+      const tweet = fetchedTweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
       if (tweet) {
         saveTweet(tweet)
       }
     }
   };
+
+  const tweetsToDisplay = useMemo(() => filterTweets(fetchedTweets, savedTweets), [fetchedTweets, savedTweets])
 
 
   return (
@@ -52,7 +59,7 @@ function App() {
             </Layout.ColumnHeader>
             <Layout.ColumnBody>
               <TweetList
-                tweets={tweets}
+                tweets={tweetsToDisplay}
                 droppableId="fetched-tweets"
                 onSaveTweet={saveTweet}
                 />
