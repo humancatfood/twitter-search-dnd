@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
 import {ITweet} from './types'
@@ -8,7 +8,7 @@ import TweetList from './components/TweetList'
 import SearchForm from './components/SearchForm'
 
 import useStoredItems from './utils/storage'
-import {fetchTweets} from './data'
+import {useTweetSearch} from './data'
 
 
 
@@ -22,16 +22,11 @@ const useSavedTweets = () => useStoredItems<ITweet>({
 function App() {
 
   const [searchTerm, setSearchTerm] = useState('')
-  const [tweets, setTweets] = useState<Array<ITweet>>([])
+
+  const tweets = useTweetSearch(searchTerm)
 
   const [savedTweets, saveTweet, deleteTweet] = useSavedTweets()
 
-  useEffect(() => {
-    if (searchTerm) {
-      fetchTweets(searchTerm)
-        .then(setTweets)
-    }
-  }, [searchTerm])
 
   const onDragEnd = ({source, destination, draggableId}: DropResult) => {
     if (source.droppableId === 'fetched-tweets' && destination?.droppableId === 'saved-tweets') {
