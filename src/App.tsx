@@ -40,6 +40,12 @@ function App() {
         saveTweet(tweet)
       }
     }
+    if (source.droppableId === 'saved-tweets' && destination?.droppableId !== 'saved-tweets') {
+      const tweet = savedTweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
+      if (tweet) {
+        deleteTweet(tweet)
+      }
+    }
   };
 
   const tweetsToDisplay = useMemo(() => filterTweets(fetchedTweets, savedTweets), [fetchedTweets, savedTweets])
