@@ -28,12 +28,28 @@ function App(): ReactElement {
 
   const [searchTerm, setSearchTerm] = useState('')
 
-  const [fetchedTweets, isLoading] = useTweetSearch(searchTerm)
+  const [fetchedTweets, isLoading, moveFetchedTweet] = useTweetSearch(searchTerm)
 
-  const [savedTweets, saveTweet, deleteTweet] = useSavedTweets()
+  const [savedTweets, saveTweet, deleteTweet, moveSavedTweets] = useSavedTweets()
 
 
   const onDragEnd = ({source, destination, draggableId}: DropResult) => {
+
+    if (source.droppableId === destination?.droppableId) {
+      if (source.droppableId === 'fetched-tweets') {
+        const tweet = fetchedTweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
+        if (tweet) {
+          moveFetchedTweet(tweet, destination.index)
+        }
+      }
+      if (source.droppableId === 'saved-tweets') {
+        const tweet = savedTweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
+        if (tweet) {
+          moveSavedTweets(tweet, destination.index)
+        }
+      }
+    }
+
     if (source.droppableId === 'fetched-tweets' && destination?.droppableId === 'saved-tweets') {
       const tweet = fetchedTweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
       if (tweet) {

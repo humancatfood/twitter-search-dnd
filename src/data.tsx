@@ -16,7 +16,7 @@ export async function fetchTweets(searchTerm: string): Promise<Array<ITweet>> {
 }
 
 
-export function useTweetSearch(searchTerm: string): [Array<ITweet>, boolean] {
+export function useTweetSearch(searchTerm: string): [Array<ITweet>, boolean, (tweet: ITweet, to: number) => void] {
   const [tweets, setTweets] = useState<Array<ITweet>>([])
   const [isLoading, setLoading] = useState<boolean>(false)
 
@@ -31,6 +31,16 @@ export function useTweetSearch(searchTerm: string): [Array<ITweet>, boolean] {
     }
   }, [searchTerm])
 
-  return [tweets, isLoading]
+  const moveTweet = (tweet: ITweet, to: number): void => setTweets(prev => {
+    const result = prev.filter((entry: ITweet) => entry.id !== tweet.id)
+    result.splice(to, 0, tweet)
+    return result
+  })
+
+  return [
+    tweets,
+    isLoading,
+    moveTweet,
+  ]
 
 }

@@ -10,6 +10,7 @@ export type result<T> = [
   Array<T>,
   (item: T) => void,
   (item: T) => void,
+  (item: T, to: number) => void,
 ]
 
 
@@ -53,10 +54,17 @@ function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
     return result
   })
 
+  const moveItem = (item: T, to: number) => setItems((prev: Array<T>) => {
+    const result = prev.filter((entry: T) => !compareFn(entry, item))
+    result.splice(to, 0, item)
+    return result
+  })
+
   return [
     items,
     addItem,
     removeItem,
+    moveItem,
   ]
 
 }
