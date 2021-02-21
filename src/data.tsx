@@ -26,6 +26,8 @@ export function useTweetSearch(searchTerm: string): [Array<ITweet>, boolean] {
       fetchTweets(searchTerm)
         .then(setTweets)
         .finally(() => setLoading(false))
+    } else {
+      setTweets([])
     }
   }, [searchTerm])
 
