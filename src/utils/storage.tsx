@@ -21,9 +21,11 @@ function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
     let storageEntry
     try {
       storageEntry = localStorage.getItem(storageKey)
-      setItems(JSON.parse(storageEntry || ''))
+      if (storageEntry) {
+        setItems(JSON.parse(storageEntry || ''))
+      }
     } catch (err) {
-      console.error('malformed storage entry:', storageEntry)
+      console.error('error retrieving storage entry:', storageEntry)
       setItems([])
     }
   }, [storageKey])
