@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
 import {ITweet} from './types'
 import * as Layout from './App.layout'
@@ -14,7 +15,7 @@ import {fetchTweets} from './data'
 
 const useSavedTweets = () => useStoredItems<ITweet>({
   storageKey: 'saved-tweets',
-  compareFn: (a, b) => String(a.id) === String(b.id),
+  compareFn: (a: ITweet, b: ITweet) => String(a.id) === String(b.id),
 })
 
 
@@ -32,40 +33,53 @@ function App() {
     }
   }, [searchTerm])
 
+  const onDragEnd = ({source, destination, draggableId}: DropResult) => {
+    if (source.droppableId === 'fetched-tweets' && destination?.droppableId === 'saved-tweets') {
+      const tweet = tweets.find((tweet: ITweet) => String(tweet.id) === String(draggableId))
+      if (tweet) {
+        saveTweet(tweet)
+      }
+    }
+  };
+
 
   return (
-    <Layout.Layout>
-      <Layout.Header>
-        <Title>Tweet Saver</Title>
-      </Layout.Header>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Layout.Layout>
+        <Layout.Header>
+          <Title>Tweet Saver</Title>
+        </Layout.Header>
 
-      <Layout.Columns>
-        <Layout.Column>
-          <Layout.ColumnHeader>
-            <SearchForm onSubmit={setSearchTerm} />
-          </Layout.ColumnHeader>
-          <Layout.ColumnBody>
-            <TweetList
-              tweets={tweets}
-              onSaveTweet={saveTweet}
-            />
-          </Layout.ColumnBody>
-        </Layout.Column>
+        <Layout.Columns>
+          <Layout.Column>
+            <Layout.ColumnHeader>
+              <SearchForm onSubmit={setSearchTerm} />
+            </Layout.ColumnHeader>
+            <Layout.ColumnBody>
+              <TweetList
+                tweets={tweets}
+                droppableId="fetched-tweets"
+                onSaveTweet={saveTweet}
+                />
+            </Layout.ColumnBody>
+          </Layout.Column>
 
-        <Layout.Column>
-          <Layout.ColumnHeader>
-            <Layout.ColumnTitle>Saved Tweets</Layout.ColumnTitle>
-          </Layout.ColumnHeader>
-          <Layout.ColumnBody>
-            <TweetList
-              tweets={savedTweets}
-              onDeleteTweet={deleteTweet}
+          <Layout.Column>
+            <Layout.ColumnHeader>
+              <Layout.ColumnTitle>Saved Tweets</Layout.ColumnTitle>
+            </Layout.ColumnHeader>
+            <Layout.ColumnBody>
+              <TweetList
+                tweets={savedTweets}
+                droppableId="saved-tweets"
+                onDeleteTweet={deleteTweet}
               />
-          </Layout.ColumnBody>
-        </Layout.Column>
-      </Layout.Columns>
+            </Layout.ColumnBody>
+          </Layout.Column>
+        </Layout.Columns>
 
-    </Layout.Layout>
+      </Layout.Layout>
+    </DragDropContext>
   );
 }
 
