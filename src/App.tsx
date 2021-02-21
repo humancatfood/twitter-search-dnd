@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 
+import useSavedItems from './utils/storage'
+
 import Tweet from './components/Tweet'
 
 import {ITweet} from './types'
@@ -19,12 +21,18 @@ async function fetchTweets(searchTerm: string): Promise<Array<ITweet>> {
 }
 
 
+const useSavedTweets = () => useSavedItems<ITweet>({
+  storageKey: 'saved-tweets',
+  compareFn: (a, b) => String(a.id) === String(b.id),
+})
+
+
 function App() {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [tweets, setTweets] = useState<Array<ITweet>>([])
-  const [savedTweets, setSavedTweets] = useState<Array<ITweet>>([])
 
+  const [savedTweets, saveTweet, deleteTweet] = useSavedTweets()
 
   useEffect(() => {
     if (searchTerm) {
@@ -41,16 +49,6 @@ function App() {
     setSearchTerm(input.value)
   }
 
-  function onSaveTweet (tweet: ITweet) {
-    setSavedTweets(prev => ([
-      ...prev.filter(inList => inList.id !== tweet.id),
-      tweet,
-    ]))
-  }
-
-  function onDeleteTweet (tweet: ITweet) {
-    setSavedTweets(prev => prev.filter(inList => inList.id !== tweet.id))
-  }
 
   return (
     <div className="App">
@@ -73,7 +71,7 @@ function App() {
                   avatar={tweet.user.profile_image_url_https}
                   date={tweet.created_at}
                   body={tweet.text}
-                  onSave={() => onSaveTweet(tweet)}
+                  onSave={() => saveTweet(tweet)}
                 />
               </li>
             ))
@@ -93,7 +91,7 @@ function App() {
                   avatar={tweet.user.profile_image_url_https}
                   date={tweet.created_at}
                   body={tweet.text}
-                  onDelete={() => onDeleteTweet(tweet)}
+                  onDelete={() => deleteTweet(tweet)}
                 />
               </li>
             ))
