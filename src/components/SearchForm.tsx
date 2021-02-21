@@ -55,14 +55,22 @@ function SearchForm({onSubmit: onSubmitProp, isLoading}: SearchFormProps) {
     e.preventDefault()
     const form = e.currentTarget as HTMLElement
     const input = form.querySelector('[name="searchterm"]') as HTMLInputElement
-    onSubmitProp(input.value)
+    const value = input.value.trim()
+    if (value) {
+      onSubmitProp(value)
+    }
   }
 
   return (
     <Form action="#" onSubmit={onSubmit}>
       <Input type="text" name="searchterm" />
       <Button type="submit">🔎</Button>
-      {isLoading && <LoadingIndicator />}
+      {isLoading && (
+        <>
+          &nbsp;
+          <LoadingIndicator />
+        </>
+      )}
     </Form>
   );
 }
