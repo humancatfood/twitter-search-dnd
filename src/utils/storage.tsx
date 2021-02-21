@@ -57,6 +57,7 @@ function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
   const moveItem = (item: T, to: number) => setItems((prev: Array<T>) => {
     const result = prev.filter((entry: T) => !compareFn(entry, item))
     result.splice(to, 0, item)
+    localStorage.setItem(storageKey, JSON.stringify(result))
     return result
   })
 
