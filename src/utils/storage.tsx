@@ -29,7 +29,7 @@ function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
   }, [storageKey])
 
 
-  const saveItem = (item: T) => setItems(prev => {
+  const addItem = (item: T) => setItems(prev => {
     const exists = prev.find(entry => compareFn(entry, item))
 
     if (exists) {
@@ -53,7 +53,7 @@ function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
 
   return [
     items,
-    saveItem,
+    addItem,
     removeItem,
   ]
 

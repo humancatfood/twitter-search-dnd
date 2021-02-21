@@ -1,27 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import './App.css';
-
-import useSavedItems from './utils/storage'
-
-import Tweet from './components/Tweet'
+import {useEffect, useState} from 'react';
 
 import {ITweet} from './types'
+import * as Layout from './App.layout'
+import Title from './components/Title'
+import TweetList from './components/TweetList'
+import SearchForm from './components/SearchForm'
+
+import useStoredItems from './utils/storage'
+import {fetchTweets} from './data'
 
 
 
-async function fetchTweets(searchTerm: string): Promise<Array<ITweet>> {
-  try {
-    const response = await fetch(`/.netlify/functions/search?q=${searchTerm}`)
-    const {statuses} = await response.json()
-    return statuses
-  } catch (err) {
-    console.error('error fetching tweets:', err)
-    return []
-  }
-}
 
-
-const useSavedTweets = () => useSavedItems<ITweet>({
+const useSavedTweets = () => useStoredItems<ITweet>({
   storageKey: 'saved-tweets',
   compareFn: (a, b) => String(a.id) === String(b.id),
 })
@@ -42,64 +33,39 @@ function App() {
   }, [searchTerm])
 
 
-  function onSubmit (e: React.FormEvent<HTMLFormElement>) : void {
-    e.preventDefault()
-    const form = e.currentTarget as HTMLElement
-    const input = form.querySelector('[name="searchterm"]') as HTMLInputElement
-    setSearchTerm(input.value)
-  }
-
-
   return (
-    <div className="App">
-      <header>
-        <h1>Tweet Saver</h1>
-      </header>
+    <Layout.Layout>
+      <Layout.Header>
+        <Title>Tweet Saver</Title>
+      </Layout.Header>
 
-      <div>
-        <form action="#" onSubmit={onSubmit}>
-          <input type="text" name="searchterm" />
-          <button type="submit">🔍</button>
-        </form>
-        <ul>
-          {
-            tweets.map(tweet => (
-              <li key={tweet.id}>
-                <Tweet
-                  name={tweet.user.name}
-                  handle={tweet.user.screen_name}
-                  avatar={tweet.user.profile_image_url_https}
-                  date={tweet.created_at}
-                  body={tweet.text}
-                  onSave={() => saveTweet(tweet)}
-                />
-              </li>
-            ))
-          }
-        </ul>
-      </div>
+      <Layout.Columns>
+        <Layout.Column>
+          <Layout.ColumnHeader>
+            <SearchForm onSubmit={setSearchTerm} />
+          </Layout.ColumnHeader>
+          <Layout.ColumnBody>
+            <TweetList
+              tweets={tweets}
+              onSaveTweet={saveTweet}
+            />
+          </Layout.ColumnBody>
+        </Layout.Column>
 
-      <div>
-        <h2>Saved Tweets</h2>
-        <ul>
-          {
-            savedTweets.map(tweet => (
-              <li key={tweet.id}>
-                <Tweet
-                  name={tweet.user.name}
-                  handle={tweet.user.screen_name}
-                  avatar={tweet.user.profile_image_url_https}
-                  date={tweet.created_at}
-                  body={tweet.text}
-                  onDelete={() => deleteTweet(tweet)}
-                />
-              </li>
-            ))
-          }
-        </ul>
-      </div>
+        <Layout.Column>
+          <Layout.ColumnHeader>
+            <Layout.ColumnTitle>Saved Tweets</Layout.ColumnTitle>
+          </Layout.ColumnHeader>
+          <Layout.ColumnBody>
+            <TweetList
+              tweets={savedTweets}
+              onDeleteTweet={deleteTweet}
+              />
+          </Layout.ColumnBody>
+        </Layout.Column>
+      </Layout.Columns>
 
-    </div>
+    </Layout.Layout>
   );
 }
 
