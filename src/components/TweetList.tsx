@@ -1,6 +1,6 @@
-import React, {ReactElement} from 'react'
+import React, {ReactElement, CSSProperties} from 'react'
 import styled from 'styled-components'
-import { Droppable, Draggable } from 'react-beautiful-dnd'
+import {Droppable, Draggable, DroppableProvided, DraggableProvided, DraggableStateSnapshot} from 'react-beautiful-dnd'
 
 import {ITweet} from '../types'
 import Tweet from './Tweet'
@@ -39,7 +39,7 @@ const Placeholder = styled.div({
   maxWidth: '60%',
 })
 
-const getItemStyle = (isDragging:boolean, draggableStyle: any) => ({
+const getItemStyle = (isDragging: boolean, draggableStyle: CSSProperties): CSSProperties => ({
   userSelect: 'none',
   transition: 'all 200ms ease-in-out',
   ...(isDragging && {
@@ -58,7 +58,7 @@ function TweetList({tweets, droppableId, onSaveTweet, onDeleteTweet, placeholder
 
   return (
     <Droppable droppableId={droppableId}>
-      {(provided: any) => (
+      {(provided: DroppableProvided) => (
         <List ref={provided.innerRef}>
           {showPlaceholder && (
             <Placeholder>{placeholder}</Placeholder>
@@ -69,14 +69,14 @@ function TweetList({tweets, droppableId, onSaveTweet, onDeleteTweet, placeholder
               draggableId={String(tweet.id)}
               index={index}
             >
-              {(provided: any, snapshot: any) => (
+              {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
                 <ListItem
                   ref={provided.innerRef}
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}
                   style={getItemStyle(
                     snapshot.isDragging,
-                    provided.draggableProps.style,
+                    provided.draggableProps?.style || {},
                   )}
                 >
                   <Tweet
