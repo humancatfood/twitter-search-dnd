@@ -1,47 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 
+import Tweet from './components/Tweet'
 
-interface IUser {
-  name: string
-  screen_name: string
-  profile_image_url_https: string
-}
+import {ITweet} from './types'
 
-interface ITweet {
-  id: number
-  user: IUser
-  created_at: string
-  text: string
-}
 
-interface TweetProps {
-  name: string
-  handle: string
-  avatar: string
-  date: string
-  body: string
-  onSave?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-  onDelete?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-}
-
-function Tweet(props: TweetProps) {
-  const {avatar, name, handle, date, body, onSave, onDelete} = props
-  return (
-    <div>
-      <img src={avatar} alt={name} />
-      <div>{name} / {handle}</div>
-      <small>{date}</small>
-      <div>{body}</div>
-      {onSave && (
-        <button onClick={onSave}>Save Tweet</button>
-      )}
-      {onDelete && (
-        <button onClick={onDelete}>Delete Tweet</button>
-      )}
-    </div>
-  )
-}
 
 async function fetchTweets(searchTerm: string): Promise<Array<ITweet>> {
   try {
