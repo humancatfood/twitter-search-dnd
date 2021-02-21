@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react'
 
 import {ITweet} from './types'
 
@@ -16,9 +16,9 @@ export async function fetchTweets(searchTerm: string): Promise<Array<ITweet>> {
 }
 
 
-export function useTweetSearch(searchTerm: string): [Array<ITweet>, Boolean] {
+export function useTweetSearch(searchTerm: string): [Array<ITweet>, boolean] {
   const [tweets, setTweets] = useState<Array<ITweet>>([])
-  const [isLoading, setLoading] = useState<Boolean>(false)
+  const [isLoading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     if (searchTerm) {

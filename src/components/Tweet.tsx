@@ -1,3 +1,4 @@
+import React, {ReactElement} from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
 
@@ -60,7 +61,7 @@ const Button = styled.button({
 })
 
 
-function Tweet(props: TweetProps) {
+function Tweet(props: TweetProps): ReactElement {
   const {avatar, name, handle, date, body, onSave, onDelete} = props
 
   return (

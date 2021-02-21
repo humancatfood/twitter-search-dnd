@@ -1,9 +1,9 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react'
 
 
 export type options<T> = {
   storageKey: string
-  compareFn: (a: T, b: T) => Boolean
+  compareFn: (a: T, b: T) => boolean
 }
 
 export type result<T> = [
@@ -35,14 +35,14 @@ function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
     const exists = prev.find((entry: T)=> compareFn(entry, item))
 
     if (exists) {
-      return prev;
+      return prev
     } else {
       const result = [
         ...prev,
         item,
       ]
       localStorage.setItem(storageKey, JSON.stringify(result))
-      return result;
+      return result
     }
   })
 
@@ -50,7 +50,7 @@ function useStoredItems<T>({storageKey, compareFn}: options<T>): result<T> {
   const removeItem = (item: T) => setItems((prev: Array<T>) => {
     const result = prev.filter((entry: T) => !compareFn(entry, item))
     localStorage.setItem(storageKey, JSON.stringify(result))
-    return result;
+    return result
   })
 
   return [

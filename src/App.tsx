@@ -1,5 +1,5 @@
-import {useMemo, useState} from 'react';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import React, {useMemo, useState, ReactElement} from 'react'
+import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 
 import {ITweet} from './types'
 import * as Layout from './App.layout'
@@ -24,7 +24,7 @@ const filterTweets = (tweets: Array<ITweet>, exclude: Array<ITweet>) => {
 }
 
 
-function App() {
+function App(): ReactElement {
 
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -46,7 +46,7 @@ function App() {
         deleteTweet(tweet)
       }
     }
-  };
+  }
 
   const tweetsToDisplay = useMemo(() => filterTweets(fetchedTweets, savedTweets), [fetchedTweets, savedTweets])
 
@@ -68,7 +68,7 @@ function App() {
                 tweets={tweetsToDisplay}
                 droppableId="fetched-tweets"
                 onSaveTweet={saveTweet}
-                />
+              />
             </Layout.ColumnBody>
           </Layout.Column>
 
@@ -88,7 +88,7 @@ function App() {
 
       </Layout.Layout>
     </DragDropContext>
-  );
+  )
 }
 
-export default App;
+export default App

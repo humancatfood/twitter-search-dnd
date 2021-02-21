@@ -1,9 +1,10 @@
+import React, {ReactElement} from 'react'
 import styled, {keyframes} from 'styled-components'
 
 
 export type SearchFormProps = {
   onSubmit: (searchTerm: string) => void,
-  isLoading: Boolean,
+  isLoading: boolean,
 }
 
 const shared = {
@@ -38,7 +39,7 @@ const pulse = keyframes`
 	50% {
 		opacity: 1;
 	}
-`;
+`
 
 const LoadingIndicator = styled.span`
   &:after {
@@ -49,7 +50,7 @@ const LoadingIndicator = styled.span`
 `
 
 
-function SearchForm({onSubmit: onSubmitProp, isLoading}: SearchFormProps) {
+function SearchForm({onSubmit: onSubmitProp, isLoading}: SearchFormProps): ReactElement {
 
   function onSubmit (e: React.FormEvent<HTMLFormElement>) : void {
     e.preventDefault()
@@ -72,7 +73,7 @@ function SearchForm({onSubmit: onSubmitProp, isLoading}: SearchFormProps) {
         </>
       )}
     </Form>
-  );
+  )
 }
 
-export default SearchForm;
+export default SearchForm
